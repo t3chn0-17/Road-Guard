@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Documentation for RoadGuard, a student engineering prototype for detecting and reporting road hazards with low-cost sensors.">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#070B14">
+
+  <meta property="og:title" content="RoadGuard Documentation">
+  <meta property="og:description" content="Documentation for RoadGuard, a student engineering prototype for detecting and reporting road hazards with low-cost sensors.">
+  <meta property="og:image" content="https://t3chn0-17.github.io/Assets/RoadGuard.png">
+
+  <meta name="twitter:card" content="summary_large_image">
+
+  
+  <title>RoadGuard Documentation</title>
+  
+  <link rel="shortcut icon" href="https://t3chn0-17.github.io/Assets/RoadGuard.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Sora:wght@300;400;600&display=swap">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <aside class="sidebar">
+    <a class="brand" href="#top">RoadGuard</a>
+    <nav aria-label="Documentation">
+      <ul>
+        <li><a href="#overview">Overview</a></li>
+        <li><a href="#problem">The problem</a></li>
+        <li><a href="#goals">Goals</a></li>
+        <li><a href="#features">Features</a></li>
+        <li><a href="#architecture">Architecture</a></li>
+        <li><a href="#hardware">Hardware</a></li>
+        <li><a href="#software">Software stack</a></li>
+        <li><a href="#enclosure">Enclosure</a></li>
+        <li><a href="#getting-started">Getting started</a></li>
+        <li><a href="#repository">Repository</a></li>
+        <li><a href="#roadmap">Roadmap</a></li>
+        <li><a href="#safety">Limitations and safety</a></li>
+        <!-- <li><a href="#palette">Color palette</a></li> -->
+        <li><a href="#license">License</a></li>
+      </ul>
+    </nav>
+    <p class="sidebar-status">Prototype, under development</p>
+  </aside>
+
+  <main id="main">
+    <header class="hero" id="top">
+      <p class="status-chip"><span class="dot" aria-hidden="true"></span>Prototype / Under development</p>
+      <h1>RoadGuard</h1>
+      <p class="lead">Intelligent road safety and hazard reporting.</p>
+      <p class="hero-text">A student engineering project exploring how low-cost hardware, software, and data analysis can help detect potential road hazards, share location-based reports, and improve driver awareness.</p>
+
+      <figure class="signal">
+        <div class="signal-frame"><svg viewBox="0 0 800 160" role="img" aria-label="A flat motion signal interrupted by a sharp spike that crosses a detection threshold">
+          <line class="grid-line" x1="0" y1="40" x2="800" y2="40"></line>
+          <line class="grid-line" x1="0" y1="80" x2="800" y2="80"></line>
+          <line class="grid-line" x1="0" y1="120" x2="800" y2="120"></line>
+          <line class="threshold" x1="0" y1="34" x2="800" y2="34"></line>
+          <line class="threshold" x1="0" y1="126" x2="800" y2="126"></line>
+          <path class="trace" pathLength="1" d="M0 82 L40 80 L80 84 L120 79 L160 83 L200 81 L240 85 L280 80 L320 82 L346 70 L358 118 L370 22 L382 138 L394 54 L406 98 L418 76 L440 82 L480 84 L520 81 L560 83 L600 79 L640 84 L680 81 L720 83 L760 80 L800 82"></path>
+          <circle class="marker" cx="370" cy="22" r="6"></circle>
+          <circle class="marker-ring" cx="370" cy="22" r="14"></circle>
+        </svg></div>
+        <figcaption>
+          <span class="legend"><span class="swatch-line trace-key"></span>Motion signal</span>
+          <span class="legend"><span class="swatch-line threshold-key"></span>Detection threshold</span>
+          <span class="legend"><span class="swatch-dot"></span>Event tagged with GPS and time</span>
+          <span class="caption-note">Conceptual illustration. Not recorded data.</span>
+        </figcaption>
+      </figure>
+    </header>
+
+    <section id="overview">
+      <h2>Overview</h2>
+      <p>RoadGuard aims to develop a low-cost system that identifies possible road hazards using motion sensor data and location information. It is built around three components.</p>
+      <div class="cards">
+        <article class="card">
+          <h3>Hardware</h3>
+          <p>Collects motion data from a sensor mounted inside a vehicle.</p>
+        </article>
+        <article class="card">
+          <h3>Software</h3>
+          <p>Processes sensor readings to identify unusual events and estimate their confidence.</p>
+        </article>
+        <article class="card">
+          <h3>Reporting interface</h3>
+          <p>Displays reported events on a map so users can review potential hazards.</p>
+        </article>
+      </div>
+      <p class="note">A future version may explore crash-event detection and emergency notification workflows. These capabilities require extensive testing and must not be treated as reliable emergency services without proper validation.</p>
+    </section>
+
+    <section id="problem">
+      <h2>The problem</h2>
+      <p>Road hazards such as potholes, damaged road surfaces, and unexpected impacts can create risks for drivers and passengers.</p>
+      <p>Information about these hazards may be incomplete, outdated, or difficult to access while travelling. RoadGuard explores whether affordable sensors and collaborative reporting can help identify potential hazards and make their locations easier to communicate.</p>
+    </section>
+
+    <section id="goals">
+      <h2>Project goals</h2>
+      <ul class="plain-list">
+        <li>Build an affordable hardware prototype.</li>
+        <li>Collect and analyze motion sensor readings.</li>
+        <li>Associate detected events with GPS coordinates.</li>
+        <li>Display potential hazards on a map.</li>
+        <li>Investigate ways to reduce false reports using repeated observations.</li>
+        <li>Evaluate the system under controlled, safe conditions.</li>
+        <li>Create a clear and maintainable software architecture.</li>
+      </ul>
+    </section>
+
+    <section id="features">
+      <h2>Planned features</h2>
+      <p>Everything on this list is a plan. None of it should be read as implemented.</p>
+      <div class="cards features">
+        <article class="card">
+          <h3>Road event detection</h3>
+          <p>Analyze accelerometer and gyroscope readings to identify unusual vehicle motion that may correspond to road irregularities.</p>
+          <p>The first implementation uses interpretable thresholds and recorded sample data before any machine learning.</p>
+        </article>
+        <article class="card">
+          <h3>Location-based reporting</h3>
+          <p>Attach GPS coordinates and timestamps to detected events. A map interface displays event locations and report details.</p>
+        </article>
+        <article class="card">
+          <h3>Confidence-based verification</h3>
+          <p>Assign confidence scores to reports using measurable evidence:</p>
+          <ul class="plain-list compact">
+            <li>Sensor signal strength.</li>
+            <li>Repeated detections near the same location.</li>
+            <li>Agreement between separate observations.</li>
+            <li>Available contextual information.</li>
+          </ul>
+          <p class="fine">A confidence score is not proof that a hazard exists.</p>
+        </article>
+        <article class="card">
+          <h3>Driver alerts</h3>
+          <p>A future interface may notify drivers about relevant nearby reports. Alert timing, accuracy, and usability must be tested before practical road use.</p>
+        </article>
+        <article class="card experimental">
+          <h3>Crash-event research</h3>
+          <p>Investigate whether sensor data can distinguish potential severe impacts from ordinary driving events.</p>
+          <p class="fine">Experimental. It must not claim that a crash occurred or replace emergency services.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="architecture">
+      <h2>System architecture</h2>
+      <p>The proposed architecture separates hardware collection, event analysis, data storage, and visualization. It is provisional and may change as the prototype is tested.</p>
+
+      <ol class="flow" aria-label="Data flow from vehicle to dashboard">
+        <li>Vehicle motion</li>
+        <li>ESP32 + MPU6050</li>
+        <li>Sensor data collection</li>
+        <li>Python event analysis</li>
+        <li>Location-tagged event</li>
+        <li>Backend API + database</li>
+        <li>Web dashboard + map</li>
+      </ol>
+
+      <h3>Component responsibilities</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th scope="col">Component</th><th scope="col">Responsibility</th></tr>
+          </thead>
+          <tbody>
+            <tr><th scope="row">ESP32</th><td>Collect sensor readings and handle embedded-device tasks</td></tr>
+            <tr><th scope="row">MPU6050</th><td>Measure acceleration and angular velocity</td></tr>
+            <tr><th scope="row">GPS source</th><td>Provide event coordinates and timestamps</td></tr>
+            <tr><th scope="row">Python</th><td>Process data and evaluate detection rules</td></tr>
+            <tr><th scope="row">Backend API</th><td>Validate, store, and serve reports</td></tr>
+            <tr><th scope="row">Database</th><td>Store reports, locations, timestamps, and verification data</td></tr>
+            <tr><th scope="row">Web interface</th><td>Display events and provide user-facing controls</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="hardware">
+      <h2>Hardware concept</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th scope="col">Part</th><th scope="col">Role</th></tr>
+          </thead>
+          <tbody>
+            <tr><th scope="row">ESP32</th><td>Microcontroller for collecting and transmitting sensor readings</td></tr>
+            <tr><th scope="row">MPU6050</th><td>Accelerometer and gyroscope for measuring motion</td></tr>
+            <tr><th scope="row">GPS source</th><td>A smartphone GPS source may be used early on to reduce hardware complexity</td></tr>
+            <tr><th scope="row">OLED display</th><td>Optional small display for local status information</td></tr>
+            <tr><th scope="row">Power input</th><td>Power connection appropriate for the selected hardware</td></tr>
+            <tr><th scope="row">Enclosure</th><td>Protective housing designed around the final component dimensions</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note">Component selection and mounting arrangements must be verified before manufacturing.</p>
+    </section>
+
+    <section id="software">
+      <h2>Software stack</h2>
+
+      <h3>Current prototype tools</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th scope="col">Technology</th><th scope="col">Purpose</th></tr>
+          </thead>
+          <tbody>
+            <tr><th scope="row"><code>Python</code></th><td>Geometry generation and future sensor-data processing</td></tr>
+            <tr><th scope="row"><code>trimesh</code></th><td>Programmatic 3D mesh construction</td></tr>
+            <tr><th scope="row"><code>manifold3d</code></th><td>Boolean geometry operations</td></tr>
+            <tr><th scope="row">STL</th><td>Portable 3D model export format</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Proposed application technologies</h3>
+      <p>These are candidates. Do not consider them implemented until the corresponding code exists.</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th scope="col">Technology</th><th scope="col">Proposed role</th></tr>
+          </thead>
+          <tbody>
+            <tr><th scope="row">Django REST Framework</th><td>Backend API</td></tr>
+            <tr><th scope="row">SQLite</th><td>Early development database</td></tr>
+            <tr><th scope="row">PostgreSQL</th><td>Potential production database</td></tr>
+            <tr><th scope="row">React</th><td>Web dashboard</td></tr>
+            <tr><th scope="row">Map library</th><td>Visualization of reported hazard locations</td></tr>
+            <tr><th scope="row">NumPy</th><td>Numerical processing of sensor readings</td></tr>
+            <tr><th scope="row">scikit-learn</th><td>Optional model experimentation when sufficient data is available</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="enclosure">
+      <h2>Enclosure specifications</h2>
+      <p>The first RoadGuard enclosure is a parameterized structural model intended for prototyping.</p>
+
+      <div class="table-wrap">
+        <table class="specs">
+          <thead>
+            <tr><th scope="col">Parameter</th><th scope="col" class="num">Specification</th></tr>
+          </thead>
+          <tbody>
+            <tr><th scope="row">Outer width</th><td class="num">120 mm</td></tr>
+            <tr><th scope="row">Outer depth</th><td class="num">80 mm</td></tr>
+            <tr><th scope="row">Outer height</th><td class="num">40 mm</td></tr>
+            <tr><th scope="row">Wall thickness</th><td class="num">2 mm</td></tr>
+            <tr><th scope="row">Floor thickness</th><td class="num">2 mm</td></tr>
+            <tr><th scope="row">OLED opening</th><td class="num">25 × 10 mm</td></tr>
+            <tr><th scope="row">Power cable opening</th><td class="num">5 mm diameter</td></tr>
+            <tr><th scope="row">Screw holes</th><td class="num">3 mm nominal diameter</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Design requirements</h3>
+      <ul class="plain-list">
+        <li>Hollow internal cavity.</li>
+        <li>Open top for access to the internal components.</li>
+        <li>Front opening for the OLED display.</li>
+        <li>Rear opening for the power cable.</li>
+        <li>Lid-supporting lip or ledge.</li>
+        <li>Screw holes positioned to support a compatible lid design.</li>
+        <li>Exportable STL model for inspection and prototype fabrication.</li>
+      </ul>
+      <p class="note"><strong>Preliminary design.</strong> The lid, screw positions, clearances, component mounting points, and cable routing must be verified against the actual hardware before fabrication.</p>
+
+      <h3>Generate the STL model</h3>
+      <p>Install the required Python dependencies:</p>
+      <pre><code>python -m pip install trimesh manifold3d</code></pre>
+      <p>Run the model generator:</p>
+      <pre><code>python roadguard_enclosure.py</code></pre>
+      <p>The expected output is <code>roadguard_enclosure.stl</code>, which opens in any compatible 3D viewer or CAD application.</p>
+    </section>
+
+    <section id="getting-started">
+      <h2>Getting started</h2>
+
+      <h3>Requirements</h3>
+      <ul class="plain-list">
+        <li>Python 3.10 or newer is recommended for the initial Python tools.</li>
+        <li><code>pip</code> for installing Python dependencies.</li>
+        <li>A compatible STL viewer for inspecting the enclosure.</li>
+        <li>A code editor for modifying the source files.</li>
+      </ul>
+
+      <h3>Run the enclosure generator</h3>
+      <ol class="steps">
+        <li>Clone or download the repository.</li>
+        <li>Open a terminal in the project directory.</li>
+        <li>Install <code>trimesh</code> and <code>manifold3d</code>.</li>
+        <li>Run <code>roadguard_enclosure.py</code>.</li>
+        <li>Open the resulting STL file in a 3D viewer.</li>
+        <li>Verify the dimensions and openings before using the model for fabrication.</li>
+      </ol>
+
+      <h3>View this documentation</h3>
+      <p>Open <code>index.html</code> in a browser. Keep <code>style.css</code> in the same folder.</p>
+    </section>
+
+    <section id="repository">
+      <h2>Repository structure</h2>
+      <p>The repository may follow this layout as the project develops. It is a suggestion, not a claim that every directory or file already exists.</p>
+      <pre><code>RoadGuard/
+├── README.md
+├── index.html
+├── style.css
+├── roadguard_enclosure.py
+├── roadguard_enclosure.stl
+├── hardware/
+│   ├── README.md
+│   └── diagrams/
+├── software/
+│   ├── backend/
+│   ├── frontend/
+│   └── sensor_analysis/
+├── data/
+│   └── README.md
+└── docs/
+    ├── architecture.md
+    ├── hardware.md
+    └── testing.md</code></pre>
+      <p>Exclude generated files, dependencies, secrets, private data, and unnecessary large datasets from version control where appropriate.</p>
+    </section>
+
+    <section id="roadmap">
+      <h2>Development roadmap</h2>
+      <p>No phase is complete yet. Each phase builds on the one before it.</p>
+
+      <div class="phases">
+        <article class="phase">
+          <h3>Phase 1: Structural prototype</h3>
+          <ul class="checks">
+            <li>Finalize the enclosure geometry.</li>
+            <li>Validate the STL mesh.</li>
+            <li>Check component fit and cable clearances.</li>
+            <li>Prepare the initial hardware layout.</li>
+          </ul>
+        </article>
+        <article class="phase">
+          <h3>Phase 2: Sensor data collection</h3>
+          <ul class="checks">
+            <li>Read data from the MPU6050.</li>
+            <li>Record sample sensor measurements.</li>
+            <li>Collect safe, controlled examples of ordinary motion and simulated road events.</li>
+            <li>Document sensor orientation and mounting conditions.</li>
+          </ul>
+        </article>
+        <article class="phase">
+          <h3>Phase 3: Event analysis</h3>
+          <ul class="checks">
+            <li>Implement an initial threshold-based detector.</li>
+            <li>Test it against recorded sample data.</li>
+            <li>Measure false positives and missed detections.</li>
+            <li>Investigate whether more advanced classification is justified.</li>
+          </ul>
+        </article>
+        <article class="phase">
+          <h3>Phase 4: Reporting application</h3>
+          <ul class="checks">
+            <li>Define the road-event data schema.</li>
+            <li>Build an API for event submission and retrieval.</li>
+            <li>Store coordinates, timestamps, and event confidence.</li>
+            <li>Build a map-based reporting interface.</li>
+            <li>Test repeated-report verification.</li>
+          </ul>
+        </article>
+        <article class="phase">
+          <h3>Phase 5: Integration and evaluation</h3>
+          <ul class="checks">
+            <li>Integrate the sensor device with the software.</li>
+            <li>Evaluate reliability under controlled conditions.</li>
+            <li>Document limitations and test results.</li>
+            <li>Prepare a reproducible demonstration.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section id="safety">
+      <h2>Limitations and safety</h2>
+      <p>RoadGuard is a research and prototyping project, not a certified automotive safety system.</p>
+      <ul class="warning-list">
+        <li>Sensor spikes do not necessarily indicate potholes or collisions.</li>
+        <li>GPS coordinates may be inaccurate or unavailable.</li>
+        <li>Different vehicles, sensor orientations, mounting positions, and speeds can affect readings.</li>
+        <li>Machine learning performance must be measured using representative data.</li>
+        <li>Emergency notifications must not be presented as reliable or connected to emergency services unless a verified integration exists.</li>
+        <li>Testing must not involve deliberately dangerous driving or creating hazards on public roads.</li>
+        <li>Location data should be handled with appropriate privacy and security protections.</li>
+      </ul>
+      <p>Any claims about accuracy, safety improvements, or real-world performance must be supported by documented testing.</p>
+    </section>
+
+    <!-- <section id="palette">
+      <h2>Color palette</h2>
+      <p>The design tokens used by this documentation site.</p>
+      <div class="palette">
+        <div class="color">
+          <span class="chip chip-bg"></span>
+          <p class="color-name">Background</p>
+          <p class="color-hex">#070B14</p>
+          <p class="color-use">Main page background</p>
+        </div>
+        <div class="color">
+          <span class="chip chip-surface"></span>
+          <p class="color-name">Surface</p>
+          <p class="color-hex">#0D1524</p>
+          <p class="color-use">Cards and panels</p>
+        </div>
+        <div class="color">
+          <span class="chip chip-border"></span>
+          <p class="color-name">Borders</p>
+          <p class="color-hex">#17243A</p>
+          <p class="color-use">Dividers and outlines</p>
+        </div>
+        <div class="color">
+          <span class="chip chip-cyan"></span>
+          <p class="color-name">Primary cyan</p>
+          <p class="color-hex">#22D3EE</p>
+          <p class="color-use">Links, highlights, active navigation</p>
+        </div>
+        <div class="color">
+          <span class="chip chip-violet"></span>
+          <p class="color-name">Violet accent</p>
+          <p class="color-hex">#8B5CF6</p>
+          <p class="color-use">Secondary emphasis</p>
+        </div>
+        <div class="color">
+          <span class="chip chip-text"></span>
+          <p class="color-name">Main text</p>
+          <p class="color-hex">#E6EDF7</p>
+          <p class="color-use">Headings and primary text</p>
+        </div>
+        <div class="color">
+          <span class="chip chip-muted"></span>
+          <p class="color-name">Muted text</p>
+          <p class="color-hex">#7789A4</p>
+          <p class="color-use">Secondary descriptions</p>
+        </div>
+      </div>
+    </section> -->
+
+    <section id="license">
+      <h2>License</h2>
+      <article class="card license">
+        <h3>RoadGuard Proprietary Software License</h3>
+        <p class="copyright">Copyright &copy; 2026 RoadGuard Project Contributors. All rights reserved.</p>
+        <p>The source code, software, designs, documentation, and other original materials in this repository are proprietary and are not open source.</p>
+        <p>No permission is granted to any person to copy, modify, redistribute, publish, sublicense, or commercially use these materials without prior written permission from the applicable rights holders.</p>
+        <p>Access to this repository does not grant ownership of, or any license to use, its contents beyond access expressly authorized by the project owners.</p>
+        <p>Third-party components remain subject to their respective licenses.</p>
+        <p>For permission requests, contact the project owners.</p>
+      </article>
+    </section>
+
+    <footer class="site-footer">
+      <p>RoadGuard. Exploring smarter ways to detect, report, and understand road hazards.</p>
+    </footer>
+  </main>
+  <script src="index.js" defer></script>
+</body>
+</html>
